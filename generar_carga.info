@@ -1,0 +1,12 @@
+    - Genera 3‑4 almacenes (Almacen).
+    - Crea 50 intersecciones (Interseccion).
+    - Añade 20 puntos de entrega (PuntoEntrega).
+    - Genera ~200 relaciones [:CONECTA_A] entre nodos aleatorios.
+Cada relación lleva las propiedades:
+    - Distancia (float 1.0‑20.0)
+    - Tiempo_estimado (entero 5‑45)
+     -Estado_trafico (float 0.0‑1.0)
+     
+El código redondea valores con un decimal o dos para que sean “lógicos”.
+
+(El fichero posee 274 líneas en total, con todos los nodos y relaciones).
