@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  neo4j:
+    image: neo4j:5.17.0
+    container_name: neo4j_logistics
+    ports:
+      - "7474:7474" # Puerto para la interfaz web (Neo4j Browser)
+      - "7687:7687" # Puerto para la conexión a la base de datos (Bolt)
+    environment:
+      - NEO4J_AUTH=neo4j/Logistics2026! # Tu usuario y contraseña
+      # Aquí le decimos que instale GDS y APOC al arrancar
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+      # Damos permisos para que los algoritmos puedan ejecutarse sin restricciones
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
+    volumes:
+      - ./neo4j_data:/data
+      - ./neo4j_logs:/logs
+      - ./neo4j_import:/var/lib/neo4j/import
+      - ./neo4j_plugins:/plugins
