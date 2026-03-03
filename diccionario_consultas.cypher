@@ -43,3 +43,15 @@ ORDER BY costo_total ASC
 LIMIT 1
 UNWIND nodos_ruta AS paso_ruta
 RETURN paso_ruta.id AS Identificador, labels(paso_ruta)[0] AS Tipo_Lugar;
+
+// 6. EXPLORACIÓN RÁPIDA DE ZONAS DE REPARTO (Uso de APOC)
+// Utiliza apoc.path.expandConfig para descubrir todos los clientes accesibles a un máximo de 3 calles de distancia desde el almacén, ideal para repartos exprés.
+MATCH (origen:Almacen {id: 'A1'})
+CALL apoc.path.expandConfig(origen, {
+    relationshipFilter: "CONECTA_A>",
+    labelFilter: ">PuntoEntrega",
+    maxLevel: 3
+})
+YIELD path
+RETURN [n in nodes(path) | n.id] AS Zonas_Express_Disponibles, length(path) AS Saltos
+ORDER BY Saltos ASC;
