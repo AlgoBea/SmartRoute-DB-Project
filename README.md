@@ -31,14 +31,11 @@ Sistema de gestión logística diseñado para optimizar rutas de entrega conside
 
 `app.py`: Interfaz de usuario y lógica de conexión con Neo4j.
 
-
 `carga_corregida.cypher`: Script para la creación de nodos (Almacén, Punto Entrega, Intersección) y relaciones (CONECTA_A).
-
 
 `diccionario_consultas.cypher`: Consultas complejas utilizando WITH, UNWIND y GDS.
 
-
-* `docker-compose.yml`: Configuración del entorno de contenedores.
+`docker-compose.yml`: Configuración del entorno de contenedores.
 
 ## Instalación y Uso
 
@@ -63,15 +60,12 @@ streamlit run app.py
 
 ```
 
-
 ## Justificación Técnica: Neo4j vs SQL
 
 Para este caso de optimización logística, Neo4j es superior a las bases de datos relacionales por las siguientes razones:
 
 1. **Eficiencia en Recorridos**: En SQL, encontrar rutas requiere múltiples *JOINs* costosos. En Neo4j, el recorrido de relaciones es una operación de tiempo constante independiente del tamaño total de los datos.
 
-2. 
-**Modelo de Datos Natural**: La red vial se representa directamente como un grafo, eliminando la necesidad de tablas intermedias de normalización.
+2. **Modelo de Datos Natural**: La red vial se representa directamente como un grafo, eliminando la necesidad de tablas intermedias de normalización.
 
-3. 
-**Algoritmos Nativos**: Neo4j permite ejecutar algoritmos complejos como Dijkstra o A* directamente sobre la estructura de datos sin necesidad de extraer la información a una aplicación externa.
+3. **Algoritmos Nativos**: Neo4j permite ejecutar algoritmos complejos como Dijkstra o A* directamente sobre la estructura de datos sin necesidad de extraer la información a una aplicación externa.
