@@ -1,38 +1,85 @@
 # Logistics Optimizer (Smart Routing)
 
-Sistema de optimización de rutas logísticas basado en grafos nativos, diseñado para calcular trayectorias eficientes considerando variables dinámicas como tráfico, distancia y restricciones de carga pesada.
+Sistema de gestión logística diseñado para optimizar rutas de entrega considerando variables dinámicas como tráfico, costo operativo y capacidad de carga. El proyecto utiliza **Neo4j** como motor de base de datos de grafos y la librería **Graph Data Science (GDS)** para el cálculo de rutas óptimas.
+
+## Características Técnicas
+
+* 
+**Algoritmos de Grafos (GDS)**: Comparación en tiempo real de **Dijkstra** (optimización por distancia) frente a **A*** (heurística basada en tiempo y tráfico).
+
+
+* 
+**Costo de Ruta**: Implementación de una función de costo dinámica: $Costo = \sum (distancia_i \times factor\_trafico_i)$.
+
+
+* **Restricciones de Carga**: Filtrado de aristas en tiempo real. Si el peso del camión supera el límite de la vía (`limite_peso`), la ruta es deshabilitada para la consulta.
+
+
+* 
+**Proyecciones en Memoria**: Uso de `gds.graph.project` para crear subgrafos virtuales que optimizan el rendimiento de los algoritmos.
+
+
+
+## Stack Tecnológico
+
+* 
+**Base de Datos**: Neo4j 5.x + GDS Library + APOC.
+
+
+* 
+**Frontend**: Streamlit (Python).
+
+
+* **Infraestructura**: Docker & Docker Compose.
 
 ## Estructura del Proyecto
 
-- **/docs**: Informe técnico, justificación teórica y diccionario de consultas Cypher.
-- **/scripts_carga**: Scripts `.cypher` para la creación del grafo y enriquecimiento de datos.
-- **/app**: Código fuente de la interfaz de visualización y lógica de integración.
+* 
+`app.py`: Interfaz de usuario y lógica de conexión con Neo4j.
 
-## Requisitos Previos
 
-- **Neo4j Database**: Versión 5.x o superior.
-- **GDS Library**: Graph Data Science plugin instalado en la instancia de Neo4j.
-- **APOC Library**: (Opcional) para funciones extendidas de carga de datos.
+* 
+`carga_corregida.cypher`: Script para la creación de nodos (Almacén, Punto Entrega, Intersección) y relaciones (CONECTA_A).
 
-## Instalación y Configuración
 
-1. **Carga de Datos:** Ejecute el contenido de `scripts_carga/carga_corregida.cypher` en su consola de Neo4j para crear los 3 nodos principales (`Almacen`, `Interseccion`, `PuntoEntrega`) y sus relaciones.
-2. **Enriquecimiento de Atributos:** Para habilitar el filtrado por restricciones de carga (Requerimiento Técnico 3), ejecute el siguiente comando para asignar capacidades de carga a las rutas:
+* 
+`diccionario_consultas.cypher`: Consultas complejas utilizando WITH, UNWIND y GDS.
 
-```cypher
-MATCH ()-[r:CONECTA_A]->()
-SET r.limite_peso = toInteger(rand() * 25 + 5);
+
+* `docker-compose.yml`: Configuración del entorno de contenedores.
+
+## Instalación y Uso
+
+1. **Levantar el entorno**:
+```bash
+docker-compose up -d
+
 ```
 
-Nota: Nuestro sistema no requiere una proyección estática manual previa. La aplicación web utiliza Cypher Projections directamente desde GDS en Python para generar grafos dinámicos en la memoria RAM según las variables del usuario.
+2. **Cargar datos**:
+Copiar y ejecutar el contenido de `carga_corregida.cypher` en Neo4j Browser.
 
-## Funcionalidades Implementadas
+3. **Instalar dependencias**:
+```bash
+pip install streamlit neo4j pandas plotly
 
-- **Algoritmos de Graph Data Science**: Comparativa de escenarios utilizando el algoritmo de Dijkstra para evaluar la ruta más corta (basado en distancia física) frente a la ruta más rápida (basado en tiempo estimado).
-- **Cálculo Dinámico de Costos**: Función de costo personalizada que integra la distancia con el factor de tráfico en tiempo real mediante agregación: `Costo = Σ(distancia * estado_trafico)`.
-- **Filtrado de Aristas**: Capacidad de excluir rutas en la consulta de búsqueda si el vehículo supera el `limite_peso` permitido por la vía en tiempo real.
-- **Visualización**: Interfaz conectada a la base de datos para mostrar los resultados de las rutas óptimas y reaccionar a simulaciones logísticas.
+```
 
-## Justificación Tecnológica
+4. **Ejecutar Dashboard**:
+```bash
+streamlit run app.py
 
-Este proyecto utiliza **Neo4j** aprovechando la **Adyacencia sin Índices**. A diferencia de los sistemas SQL, el recorrido de rutas en este optimizador no depende de JOINs costosos, permitiendo una complejidad computacional de O(1) por salto, lo que garantiza escalabilidad ante redes viales de gran tamaño.
+```
+
+
+## Justificación Técnica: Neo4j vs SQL
+
+Para este caso de optimización logística, Neo4j es superior a las bases de datos relacionales por las siguientes razones:
+
+1. **Eficiencia en Recorridos**: En SQL, encontrar rutas requiere múltiples *JOINs* costosos. En Neo4j, el recorrido de relaciones es una operación de tiempo constante independiente del tamaño total de los datos.
+
+2. 
+**Modelo de Datos Natural**: La red vial se representa directamente como un grafo, eliminando la necesidad de tablas intermedias de normalización.
+
+3. 
+**Algoritmos Nativos**: Neo4j permite ejecutar algoritmos complejos como Dijkstra o A* directamente sobre la estructura de datos sin necesidad de extraer la información a una aplicación externa.
