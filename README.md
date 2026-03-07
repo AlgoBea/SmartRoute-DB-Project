@@ -4,29 +4,24 @@ Sistema de gestión logística diseñado para optimizar rutas de entrega conside
 
 ## Características Técnicas
 
-* 
 **Algoritmos de Grafos (GDS)**: Comparación en tiempo real de **Dijkstra** (optimización por distancia) frente a **A*** (heurística basada en tiempo y tráfico).
 
 
-* 
 **Costo de Ruta**: Implementación de una función de costo dinámica: $Costo = \sum (distancia_i \times factor\_trafico_i)$.
 
 
 * **Restricciones de Carga**: Filtrado de aristas en tiempo real. Si el peso del camión supera el límite de la vía (`limite_peso`), la ruta es deshabilitada para la consulta.
 
 
-* 
 **Proyecciones en Memoria**: Uso de `gds.graph.project` para crear subgrafos virtuales que optimizan el rendimiento de los algoritmos.
 
 
 
 ## Stack Tecnológico
 
-* 
 **Base de Datos**: Neo4j 5.x + GDS Library + APOC.
 
 
-* 
 **Frontend**: Streamlit (Python).
 
 
@@ -34,15 +29,12 @@ Sistema de gestión logística diseñado para optimizar rutas de entrega conside
 
 ## Estructura del Proyecto
 
-* 
 `app.py`: Interfaz de usuario y lógica de conexión con Neo4j.
 
 
-* 
 `carga_corregida.cypher`: Script para la creación de nodos (Almacén, Punto Entrega, Intersección) y relaciones (CONECTA_A).
 
 
-* 
 `diccionario_consultas.cypher`: Consultas complejas utilizando WITH, UNWIND y GDS.
 
 
